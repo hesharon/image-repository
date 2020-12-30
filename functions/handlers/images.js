@@ -77,39 +77,14 @@ exports.postImage = (req, res) => {
                     createdAt: new Date().toISOString()
                 })
             })
+            .then(() => {
+                return res.json({ message: "Images uploaded successfully" });
+            })
             .catch((err) => {
                 console.error(err)
                 return res.status(500).json({ error: err.code })
             })
         })
      })
-    busboy.end(req.rawBody);
-}
-
-exports.postImages = (req, res) => {
-    const BusBoy = require('busboy')
-
-    const busboy = new BusBoy({ headers: req.headers });
-    const files = []
-    const buffers = {}
-    busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-        buffers[fieldname] = []
-        file.on('data', data => {
-            buffers[fieldname].push(data)
-        })
-        file.on('end', () => {
-            files.push({
-                fileBuffer: Buffer.concat(buffers[fieldname]),
-                fileType: mimetype,
-                fileName: filename,
-                fileEnc: encoding
-            })
-        })
-    })
-    busboy.on('finish', () => {
-        console.log(files)
-        res.status(200).json({success: true})
-    })
-
     busboy.end(req.rawBody);
 }
