@@ -1,21 +1,17 @@
 const functions = require('firebase-functions')
-
-const app = require("express")()
-
+const express = require("express")
+const app = express()
 const { db } = require("./util/admin")
-
 const FbAuth = require("./util/FbAuth")
-const express = require('express')
-
 const cors = require("cors")
+
 app.use(cors({ origin: true }))
-app.use(express.json({limit: '150mb'}))
-app.use(express.urlencoded({limit: '150mb'}))
 
 const {
-   getAllImages,
+    getAllImages,
+   getAllMyImages,
     postImages,
-    postImage,
+    setPrivacy,
 //    deleteImages,
 //    deleteImage
 } = require('./handlers/images')
@@ -27,9 +23,10 @@ const {
  } = require('./handlers/users')
 
  // Image routes
+app.get('/my-images', FbAuth, getAllMyImages)
 app.get('/images', getAllImages)
-app.post('/image',FbAuth, postImage)
-app.post('/images', postImages)
+app.post('/images',FbAuth, postImages)
+app.post('/privacy', FbAuth, setPrivacy)
 
 // User routes
 app.post('/signup', signup)
